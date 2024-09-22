@@ -5,17 +5,14 @@
 #    FILE: compress_video.sh
 #
 #    USAGE:
-#       compress_video.sh [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-f 0]
-#                          -e EXTENSION      Specify the file extension
-#                                            to filter on source. Eg: -e mkv'
-#                          -s SOURCE         Specify the source folder
-#                                            to compress from. Eg: /mnt/myvideos'
-#                          -d DESTINATION    Specify the destination folder to
-#                                            compress to. Note that files will
-#                                            not be overwritten. Eg: /mnt/converted'
+#       compress_video.sh [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-f 0] [-b BITRATE]
+#                          -e EXTENSION      Specify the file extension to filter on source. Eg: -e mkv'
+#                          -s SOURCE         Specify the source folder to compress from. Eg: /mnt/myvideos'
+#                          -d DESTINATION    Specify the destination folder to compress to. Note that files will not be overwritten. Eg: /mnt/converted'
+#                          -b BITRATE        Specify the bitrate quality in kbps. Eg: -b 2000'
+#                          -f 0/1            0=None (default), 1=Report the frame count before each encoding'
 #
-#    DESCRIPTION: This script compresses videos to x265 (HEVC) from one location
-#    to another recursively without overwriting the destination.
+#    DESCRIPTION: This script compresses videos to x265 (HEVC) from one location to another recursively without overwriting the destination.
 #
 #          BUGS: Report bugs to Dead Laurin via Github:
 #                https://github.com/DeadLaurin/CompressVideo/issues
@@ -25,10 +22,11 @@
 # show the usage pattern of this script
 function usage()
 {
-    echo "Usage: $(basename $0) [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-f 0]" 2>&1
+    echo "Usage: $(basename $0) [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-f 0] [-b BITRATE]" 2>&1
     echo '    -e EXTENSION      Specify the file extension to filter on source. Eg: -e mkv'
     echo '    -s SOURCE         Specify the source folder to compress from. Eg: /mnt/myvideos'
-    echo '    -d DESTINATION    Specify the destination folder to compress to. Note that files will not be overwritten. Eg: /home/user/myvideos'
+    echo '    -d DESTINATION    Specify the destination folder to compress to. Note that files will not be overwritten. Eg: /mnt/converted'
+    echo '    -b BITRATE        Specify the bitrate quality in kbps. Eg: -b 2000'
     echo '    -f 0/1            0=None (default), 1=Report the frame count before each encoding'
     exit 1
 }
@@ -37,6 +35,7 @@ function usage()
 unset -v extension
 unset -v source
 unset -v destination
+unset -v bitrate
 unset -v showframes
 
 # if no input argument found, exit the script with usage
@@ -53,9 +52,10 @@ function draw_line()
 }
 
 # list of arguments expected in the input
-optstring=":e:s:d:f:"
+optstring=":e:s:d:f:b:"
 
 showframes=0
+bitrate=2000
 
 # assign arguments to variables
 while getopts ${optstring} arg; do
@@ -71,6 +71,9 @@ while getopts ${optstring} arg; do
         ;;
     f)
         showframes=$OPTARG
+        ;;
+    b)
+        bitrate=$OPTARG
         ;;
     :)
         echo "$0: Must supply an argument to -$OPTARG." >&2
@@ -124,7 +127,7 @@ for i in "$source"/**/*."$extension"; do
     height=$(ffprobe -loglevel error -select_streams v:0 -show_entries stream=height -of default=nw=1:nk=1 "$i")
 
     draw_line
-    if [ showframes = "0" ]; then
+    if [ $showframes = "0" ]; then
         echo -e "Compressing \e[1;32m""$i""\e[0m with size (\e[1;31m" $width "x" $height "\e[0m) to file \e[1;34m""$destination""""$relative_path""\e[0m"
     else
         frames=$(ffprobe -v error -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 "$i")
@@ -135,6 +138,9 @@ for i in "$source"/**/*."$extension"; do
     # Create the output folder if it doesn't exist
     mkdir -p "$destination""$(dirname "$relative_path")"
 
+    # Set ffmpeg options based on the bitrate
+    ffmpeg_opts="-c:v libx265 -vtag hvc1 -b:v ${bitrate}k"
+
     # Run ffmpeg with nice to not hog all CPU for itself
-    nice ffmpeg -stats -hide_banner -loglevel error -i "$i" -c:v libx265 -vtag hvc1 -b:v 2000k -map 0 -c:a copy "$destination$relative_path"
+    nice ffmpeg -stats -hide_banner -loglevel error -i "$i" ${ffmpeg_opts} -map 0 -c:a copy "$destination$relative_path"
 done
