@@ -10,6 +10,7 @@ This script compresses videos to x265 (HEVC) from one location to another recurs
 - If terminated, can be restarted and will not overwrite already created files
 - Will not delete or overwrite any existing files
 - Will not recompress a source video that's already in h265 (HEVC) format.
+- Has the option to select your desired Bitrate
 
 # Requirement
 The script uses ffmpeg and can be install on Debian/Ubuntu based systems or [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) with:
@@ -28,11 +29,12 @@ Now the script  is ready to use. You could move the script to somewhere in your 
 
 # Usage
 ```
-./compress_video.sh [-e EXTENSION] [-s SOURCE] [-d DESTINATION]
+./compress_video.sh [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-b BITRATE]
         -e EXTENSION        Mandatory: Specify the file extension to filter on source. Eg: -e mkv
         -s SOURCE           Mandatory: Specify the source folder to compress from. Eg: -s /mnt/myvideos
         -d DESTINATION      Mandatory: Specify the destination folder to compress to. Note that files 
                                        will not be overwritten. Eg: -d /home/user/myvideos
+        -b BITRATE        Specify the bitrate quality in kbps. Eg: -b 2000
 ```
 
 # Example
