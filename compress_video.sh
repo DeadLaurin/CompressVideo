@@ -5,7 +5,7 @@
 #    FILE: compress_video.sh
 #
 #    USAGE:
-#       compress_video.sh [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-f 0] [-b BITRATE]
+#       compress_video.sh [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-b BITRATE] [-f 0]
 #                          -e EXTENSION      Specify the file extension to filter on source. Eg: -e mkv'
 #                          -s SOURCE         Specify the source folder to compress from. Eg: /mnt/myvideos'
 #                          -d DESTINATION    Specify the destination folder to compress to. Note that files will not be overwritten. Eg: /mnt/converted'
@@ -22,7 +22,7 @@
 # show the usage pattern of this script
 function usage()
 {
-    echo "Usage: $(basename $0) [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-f 0] [-b BITRATE]" 2>&1
+    echo "Usage: $(basename $0) [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-b BITRATE] [-f 0]" 2>&1
     echo '    -e EXTENSION      Specify the file extension to filter on source. Eg: -e mkv'
     echo '    -s SOURCE         Specify the source folder to compress from. Eg: /mnt/myvideos'
     echo '    -d DESTINATION    Specify the destination folder to compress to. Note that files will not be overwritten. Eg: /mnt/converted'
