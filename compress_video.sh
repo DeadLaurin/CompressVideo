@@ -5,12 +5,11 @@
 #    FILE: compress_video.sh
 #
 #    USAGE:
-#       compress_video.sh [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-b BITRATE] [-f 0]
+#       compress_video.sh [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-b BITRATE]
 #                          -e EXTENSION      Specify the file extension to filter on source. Eg: -e mkv'
 #                          -s SOURCE         Specify the source folder to compress from. Eg: /mnt/myvideos'
 #                          -d DESTINATION    Specify the destination folder to compress to. Note that files will not be overwritten. Eg: /mnt/converted'
 #                          -b BITRATE        Specify the bitrate quality in kbps. Eg: -b 2000'
-#                          -f 0/1            0=None (default), 1=Report the frame count before each encoding'
 #
 #    DESCRIPTION: This script compresses videos to x265 (HEVC) from one location to another recursively without overwriting the destination.
 #
@@ -22,12 +21,11 @@
 # show the usage pattern of this script
 function usage()
 {
-    echo "Usage: $(basename $0) [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-b BITRATE] [-f 0]" 2>&1
+    echo "Usage: $(basename $0) [-e EXTENSION] [-s SOURCE] [-d DESTINATION] [-b BITRATE]" 2>&1
     echo '    -e EXTENSION      Specify the file extension to filter on source. Eg: -e mkv'
     echo '    -s SOURCE         Specify the source folder to compress from. Eg: /mnt/myvideos'
     echo '    -d DESTINATION    Specify the destination folder to compress to. Note that files will not be overwritten. Eg: /mnt/converted'
     echo '    -b BITRATE        Specify the bitrate quality in kbps. Eg: -b 2000'
-    echo '    -f 0/1            0=None (default), 1=Report the frame count before each encoding'
     exit 1
 }
 
@@ -36,7 +34,6 @@ unset -v extension
 unset -v source
 unset -v destination
 unset -v bitrate
-unset -v showframes
 
 # if no input argument found, exit the script with usage
 if [[ ${#} -eq 0 ]]; then
@@ -52,9 +49,8 @@ function draw_line()
 }
 
 # list of arguments expected in the input
-optstring=":e:s:d:f:b:"
+optstring=":e:s:d:b:"
 
-showframes=0
 bitrate=2000
 
 # assign arguments to variables
@@ -68,9 +64,6 @@ while getopts ${optstring} arg; do
         ;;
     d)
         destination=$OPTARG
-        ;;
-    f)
-        showframes=$OPTARG
         ;;
     b)
         bitrate=$OPTARG
@@ -127,12 +120,8 @@ for i in "$source"/**/*."$extension"; do
     height=$(ffprobe -loglevel error -select_streams v:0 -show_entries stream=height -of default=nw=1:nk=1 "$i")
 
     draw_line
-    if [ $showframes = "0" ]; then
-        echo -e "Compressing \e[1;32m""$i""\e[0m with size (\e[1;31m" $width "x" $height "\e[0m) to file \e[1;34m""$destination""""$relative_path""\e[0m"
-    else
-        frames=$(ffprobe -v error -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 "$i")
-        echo -e "Compressing \e[1;32m""$i""\e[0m with size \e[1;31m" $width "x" $height "\e[0m and with \e[1;31m" $frames "\e[0m frames to file \e[1;34m""$destination""""$relative_path""\e[0m"
-    fi
+    frames=$(ffprobe -v error -select_streams v:0 -count_packets -show_entries stream=nb_read_packets -of csv=p=0 "$i")
+    echo -e "Compressing \e[1;32m""$i""\e[0m with size \e[1;31m" $width "x" $height "\e[0m and with \e[1;31m" $frames "\e[0m frames to file \e[1;34m""$destination""""$relative_path""\e[0m"
     draw_line
 
     # Create the output folder if it doesn't exist
