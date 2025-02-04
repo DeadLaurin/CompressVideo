@@ -22,7 +22,7 @@ Windows users, to find out more regarding WSL, use [this link](https://docs.micr
 # Download/Install script
 To download and use the script, do the following in a folder of your choosing:
 ```
-wget https://raw.githubusercontent.com/DeadLaurin/CompressVideo/main/compress_video.sh
+wget https://raw.githubusercontent.com/DeadLaurin/CompressVideo/Testing/compress_video.sh
 chmod +x compress_video.sh
 ```
 Now the script  is ready to use. You could move the script to somewhere in your PATH if you'd like to access it from anywhere.
