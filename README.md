@@ -38,9 +38,9 @@ Now the script  is ready to use. You could move the script to somewhere in your 
 ```
 
 # Example
-Compress MKV videos from location ```/mnt/videos``` to ```~/videos```
+Compress MKV videos from location ```/mnt/videos``` to ```~/videos``` with ```2500 Bitrate```
 ```
-./compress_video.sh -e mkv -s /mnt/videos -d ~/videos
+./compress_video.sh -e mkv -s /mnt/videos -d ~/videos -b 2500
 ```
 The output might look like this:
 ```
@@ -48,7 +48,7 @@ Destination file exists: ~/videos/Season 1/video1.mkv
 Destination file exists: ~/videos/Season 1/video2.mkv
 Destination file exists: ~/videos/Season 1/video3.mkv
 ---------------------------------------------------------------------------------------------------------------------------------
-Compressing  /mnt/videos/Season 1/video4.mkv  with size ( 1280 x 720 ) to file  ~/videos/Season 1/video4.mkv
+Compressing  /mnt/videos/Season 1/video4.mkv  with size ( 1280 x 720 ) and with 31081 frames to file  ~/videos/Season 1/video4.mkv
 ---------------------------------------------------------------------------------------------------------------------------------
 x265 [info]: HEVC encoder version 3.6+1-aa7f602f7
 x265 [info]: build info [Linux][GCC 13.2.0][64 bit] 8bit+10bit+12bit
