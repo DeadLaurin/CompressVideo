@@ -131,5 +131,5 @@ for i in "$source"/**/*."$extension"; do
     ffmpeg_opts="-c:v libx265 -vtag hvc1 -b:v ${bitrate}k"
 
     # Run ffmpeg with nice to not hog all CPU for itself
-    nice ffmpeg -stats -hide_banner -loglevel error -i "$i" ${ffmpeg_opts} -map 0 -c:a copy "$destination$relative_path"
+    nice ffmpeg -stats -hide_banner -loglevel error -i "$i" ${ffmpeg_opts} -map 0 -c:a copy -c:s copy "$destination$relative_path"
 done
