@@ -1,6 +1,8 @@
 # Compress Video to x265 recursively
 This script compresses videos to x265 (HEVC) from one location to another recursively without overwriting the destination.
 
+[![blazingly fast](https://blazingly.fast/api/badge.svg?repo=DeadLaurin%2FCompressVideo)](https://blazingly.fast)
+
 # Features
 - Open Source bash script
 - Can run on Linux and [Windows WSL](https://docs.microsoft.com/en-us/windows/wsl/)
